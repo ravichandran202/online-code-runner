@@ -1,0 +1,53 @@
+[
+    {
+        "language": "python",
+        "version": "3.10.0",
+        "aliases": [
+            "py",
+            "python3"
+        ],
+        "runtime": "python3"
+    },
+    {
+        "language": "javascript",
+        "version": "18.15.0",
+        "aliases": [
+            "js",
+            "node"
+        ],
+        "runtime": "node"
+    },
+    {
+        "language": "go",
+        "version": "1.19.0",
+        "aliases": [
+            "golang"
+        ],
+        "runtime": "go"
+    },
+    {
+        "language": "java",
+        "version": "17.0.0",
+        "aliases": [
+            "openjdk"
+        ],
+        "runtime": "java"
+    },
+    {
+        "language": "c",
+        "version": "12.0.0",
+        "aliases": [
+            "gcc"
+        ],
+        "runtime": "gcc"
+    },
+    {
+        "language": "cpp",
+        "version": "12.0.0",
+        "aliases": [
+            "c++",
+            "g++"
+        ],
+        "runtime": "gcc"
+    }
+]
