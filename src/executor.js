@@ -110,7 +110,8 @@ const executeCode = (language, files, stdin, args = []) => {
                 resolve({
                     stdout,
                     stderr,
-                    code
+                    code,
+                    output: stdout
                 });
             });
 
