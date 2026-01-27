@@ -88,7 +88,7 @@ const executeCode = (language, files, stdin, args = []) => {
                 fs.writeFileSync(path.join(jobDir, mainFile), finalContent);
 
                 cmd = 'sh';
-                cmdArgs = ['-c', `sqlite3 -header -column < ${mainFile}`];
+                cmdArgs = ['-c', `sqlite3 -header -separator ' | ' < ${mainFile}`];
             }
 
             // Append user arguments if they exist and it's not a shell chained command (simplification)
