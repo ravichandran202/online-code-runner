@@ -70,6 +70,25 @@ const executeCode = (language, files, stdin, args = []) => {
             } else if (language === 'cpp' || runtimes.find(r => r.language === 'cpp').aliases.includes(language)) {
                 cmd = 'sh';
                 cmdArgs = ['-c', `g++ ${mainFile} -o main && ./main`];
+            } else if (language === 'sql' || runtimes.find(r => r.language === 'sql').aliases.includes(language)) {
+                // Read seed file
+                const seedContent = fs.readFileSync(path.join(__dirname, 'seed.sql'), 'utf8');
+
+                // We need to prepend seed data to the main file or run it first
+                // Easiest is to modify the mainFile content on disk to include seed
+                let userContent = fs.readFileSync(path.join(jobDir, mainFile), 'utf8');
+
+                // SQL Aliases / Auto-correction for convenience
+                // Replace "SHOW TABLES" with ".tables"
+                userContent = userContent.replace(/SHOW\s+TABLES\s*;?/gi, '.tables');
+                // Replace "DESCRIBE table_name" with ".schema table_name" (basic support)
+                userContent = userContent.replace(/DESCRIBE\s+(\w+)\s*;?/gi, '.schema $1');
+
+                const finalContent = seedContent + '\n' + userContent;
+                fs.writeFileSync(path.join(jobDir, mainFile), finalContent);
+
+                cmd = 'sh';
+                cmdArgs = ['-c', `sqlite3 -header -column < ${mainFile}`];
             }
 
             // Append user arguments if they exist and it's not a shell chained command (simplification)
@@ -137,6 +156,7 @@ const getExtension = (lang) => {
         case 'java': return 'java';
         case 'c': return 'c';
         case 'cpp': return 'cpp';
+        case 'sql': return 'sql';
         default: return 'txt';
     }
 };
