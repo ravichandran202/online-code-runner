@@ -20,10 +20,10 @@ app.use(cors({
 }));
 app.use(bodyParser.json());
 
-app.use('/api/v2', routes);
+app.use('/api/v1/ncs', routes);
 
 app.get('/', (req, res) => {
-    res.json({ message: 'Piston API Clone is running' });
+    res.json({ message: 'Welcome To Namma Coding Shaale Code Runner....' });
 });
 
 app.listen(PORT, () => {
