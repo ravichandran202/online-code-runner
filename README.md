@@ -1,6 +1,6 @@
-# Code Runner (NCS Piston API v2 Variant)
+# Code Runner
 
-A high-performance code execution engine compatible with the Piston API v2 specification. This service allows you to execute code in various languages securely within isolated environments.
+A high-performance code execution engine . This service allows you to execute code in various languages securely within isolated environments.
 
 ## Features
 
