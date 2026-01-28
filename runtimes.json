@@ -49,5 +49,14 @@
             "g++"
         ],
         "runtime": "gcc"
+    },
+    {
+        "language": "sql",
+        "version": "3.36.0",
+        "aliases": [
+            "sqlite",
+            "sqlite3"
+        ],
+        "runtime": "sqlite3"
     }
 ]
