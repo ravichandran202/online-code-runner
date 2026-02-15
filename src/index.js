@@ -12,7 +12,8 @@ app.use(cors({
         "http://127.0.0.1:8000",
         "http://localhost:2000",
         "https://namma-coding-shaale.in",
-        "https://nammacodingshaale.in"
+        "https://nammacodingshaale.in",
+        "https://nammacodingshaale.up.railway.app",
     ],
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
