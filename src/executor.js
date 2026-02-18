@@ -139,8 +139,8 @@ const executeCode = (language, files, stdin, args = [], runTimeout = 3000, compi
             let stdout = '', stderr = '';
             if (stdin) {
                 child.stdin.write(stdin);
-                child.stdin.end();
             }
+            child.stdin.end();
 
             child.stdout.on('data', d => stdout += d.toString());
             child.stderr.on('data', d => stderr += d.toString());
