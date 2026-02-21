@@ -142,11 +142,6 @@ const executeCode = (language, files, stdin, args = [], runTimeout = 3000, compi
             let stdout = '', stderr = '';
             if (stdin) {
                 child.stdin.write(stdin);
-                if (!stdin.endsWith('\n')) {
-                    child.stdin.write('\n');
-                }
-            } else {
-                child.stdin.write('\n');
             }
             child.stdin.end();
 
