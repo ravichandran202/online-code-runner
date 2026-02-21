@@ -31,11 +31,14 @@ const executeCode = (language, files, stdin, args = [], runTimeout = 3000, compi
             fs.mkdirSync(jobDir);
 
             files.forEach((file, index) => {
-                const fileName = file.name || `main${index > 0 ? index : ''}.${getExtension(language)}`;
+                const defaultName = (language === 'java' && index === 0)
+                    ? 'Main.java'
+                    : `main${index > 0 ? index : ''}.${getExtension(language)}`;
+                const fileName = file.name || defaultName;
                 fs.writeFileSync(path.join(jobDir, fileName), file.content);
             });
 
-            const mainFile = files[0].name || `main.${getExtension(language)}`;
+            const mainFile = files[0].name || (language === 'java' ? 'Main.java' : `main.${getExtension(language)}`);
             let compileResult = null;
             let runCmd = '', runArgs = [];
 
@@ -139,6 +142,11 @@ const executeCode = (language, files, stdin, args = [], runTimeout = 3000, compi
             let stdout = '', stderr = '';
             if (stdin) {
                 child.stdin.write(stdin);
+                if (!stdin.endsWith('\n')) {
+                    child.stdin.write('\n');
+                }
+            } else {
+                child.stdin.write('\n');
             }
             child.stdin.end();
 
