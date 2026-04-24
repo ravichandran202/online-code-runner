@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const routes = require('./routes');
+const { startCleanup, drainInFlight } = require('./jobQueue');
 
 const cors = require('cors');
 const app = express();
@@ -28,6 +29,31 @@ app.get('/', (req, res) => {
     res.json({ message: 'Welcome To Namma Coding Shaale Code Runner....' });
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+
+    // Start the TTL-based cleanup timer for completed jobs
+    startCleanup();
 });
+
+// Graceful shutdown: stop accepting new connections, wait for in-flight
+// code executions to finish, then exit cleanly.
+const shutdown = async (signal) => {
+    console.log(`${signal} received — shutting down gracefully`);
+
+    server.close(async () => {
+        console.log('HTTP server closed. Waiting for in-flight jobs...');
+        await drainInFlight();
+        console.log('All in-flight jobs finished. Exiting.');
+        process.exit(0);
+    });
+
+    // Force-exit after 30 s if jobs are still running
+    setTimeout(() => {
+        console.error('Graceful shutdown timed out. Forcing exit.');
+        process.exit(1);
+    }, 30_000).unref();
+};
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT',  () => shutdown('SIGINT'));

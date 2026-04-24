@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const runtimes = require('../runtimes.json');
-const { executeCode } = require('./executor');
+const { submitJob, getJobStatus } = require('./jobQueue');
 
 // GET /api/v2/runtimes
 router.get('/runtimes', (req, res) => {
@@ -49,26 +49,36 @@ router.delete('/packages', (req, res) => {
 });
 
 // POST /api/v1/ncs/execute
-router.post('/execute', async (req, res) => {
-    try {
-        const { language, version, files, stdin, args, run_timeout, compile_timeout } = req.body;
+// Accepts the same request body as before but returns immediately with a
+// job ID (HTTP 202 Accepted). Execution happens in the background.
+router.post('/execute', (req, res) => {
+    const { language, version, files, stdin, args, run_timeout, compile_timeout } = req.body;
 
-        if (!language || !files || !files.length) {
-            return res.status(400).json({ message: 'Language and files are required' });
-        }
-
-        const result = await executeCode(language, files, stdin, args, run_timeout, compile_timeout);
-
-        res.json({
-            language: language,
-            version: version || runtimes.find(r => r.language === language || r.aliases.includes(language))?.version || "*",
-            run: result.run,
-            compile: result.compile
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Execution failed', error: error.message });
+    if (!language || !files || !files.length) {
+        return res.status(400).json({ message: 'Language and files are required' });
     }
+
+    const jobId = submitJob(language, files, stdin, args, run_timeout, compile_timeout);
+
+    res.status(202).json({ jobId, status: 'pending' });
+});
+
+// GET /api/v1/ncs/jobs/:jobId
+// Poll this endpoint to retrieve the result of a previously submitted job.
+router.get('/jobs/:jobId', (req, res) => {
+    const { jobId } = req.params;
+    const job = getJobStatus(jobId);
+
+    if (!job) {
+        return res.status(404).json({ message: `Job ${jobId} not found` });
+    }
+
+    if (job.status === 'pending') {
+        return res.json({ jobId, status: 'pending' });
+    }
+
+    // completed or failed
+    res.json({ jobId, status: job.status, result: job.result });
 });
 
 module.exports = router;
