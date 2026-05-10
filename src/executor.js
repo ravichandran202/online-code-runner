@@ -6,8 +6,8 @@ const runtimes = require('../runtimes.json');
 
 const TEMP_DIR = path.join(__dirname, '../temp');
 const MAX_CONCURRENT_JOBS = parsePositiveInteger(process.env.MAX_CONCURRENT_JOBS, 4);
-const MAX_QUEUE_SIZE = parsePositiveInteger(process.env.MAX_QUEUE_SIZE, 100);
-const MAX_OUTPUT_BYTES = parsePositiveInteger(process.env.MAX_OUTPUT_BYTES, 1024 * 1024);
+const MAX_QUEUE_SIZE = parsePositiveInteger(process.env.MAX_QUEUE_SIZE, 200);
+const MAX_OUTPUT_BYTES = parsePositiveInteger(process.env.MAX_OUTPUT_BYTES, 100 * 1024); 
 
 const queuedJobs = [];
 let activeJobs = 0;
