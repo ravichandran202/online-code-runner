@@ -66,6 +66,14 @@ router.post('/execute', async (req, res) => {
             compile: result.compile
         });
     } catch (error) {
+        if (error.code === 'QUEUE_LIMIT_EXCEEDED' || error.code === 'OUTPUT_LIMIT_EXCEEDED') {
+            return res.status(error.statusCode || 400).json({
+                message: error.message,
+                error: error.code,
+                details: error.details || undefined
+            });
+        }
+
         console.error(error);
         res.status(500).json({ message: 'Execution failed', error: error.message });
     }
