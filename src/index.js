@@ -14,6 +14,7 @@ app.use(cors({
         "https://namma-coding-shaale.in",
         "https://nammacodingshaale.in",
         "https://nammacodingshaale.up.railway.app",
+        "https://stage.nammacodingshaale.in",
     ],
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
